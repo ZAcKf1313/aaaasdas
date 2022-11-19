@@ -1,0 +1,20 @@
+
+    while task.wait() do
+        pcall(function()
+            local LocalPlayer = game:GetService("Players").LocalPlayer;
+            local connection = syn.websocket.connect("ws://localhost:55555/")
+            
+            connection:Send("Client: "..LocalPlayer.Name)
+            connection.OnMessage:Connect(function(call) 
+                local callback, output = loadstring(call);
+                if not callback then
+                    connection:Send("Runtime◘ "..output); --Error Runtime
+                else
+                    local status, console = pcall(callback) --Error Compile
+                    if console then connection:Send("Compile◘ "..console) end
+                end
+            end)
+
+            connection.OnClose:Wait() 
+        end)
+    end
